@@ -1,0 +1,68 @@
+{
+	"name": "LA_County_Covid19_tests_date_table",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "LA_County_Covid19_tests_date_table.csv",
+				"container": "gb-blob-container"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Prop_0",
+				"type": "String"
+			},
+			{
+				"name": "date_use",
+				"type": "String"
+			},
+			{
+				"name": "cumulative_tests",
+				"type": "String"
+			},
+			{
+				"name": "cumulative_tests_pos",
+				"type": "String"
+			},
+			{
+				"name": "percent_positive_tests_cum",
+				"type": "String"
+			},
+			{
+				"name": "tests",
+				"type": "String"
+			},
+			{
+				"name": "tests_pos",
+				"type": "String"
+			},
+			{
+				"name": "percent_positive_tests",
+				"type": "String"
+			},
+			{
+				"name": "avg_tests",
+				"type": "String"
+			},
+			{
+				"name": "avg_pos_tests",
+				"type": "String"
+			},
+			{
+				"name": "percent_positive_avg_tests",
+				"type": "String"
+			}
+		]
+	}
+}

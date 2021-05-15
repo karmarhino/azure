@@ -10,6 +10,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "source1"
+				},
+				{
+					"dataset": {
+						"referenceName": "LA_County_Covid19_tests_date_table",
+						"type": "DatasetReference"
+					},
+					"name": "dailytests"
 				}
 			],
 			"sinks": [
@@ -19,6 +26,13 @@
 						"type": "DatasetReference"
 					},
 					"name": "sink1"
+				},
+				{
+					"dataset": {
+						"referenceName": "AzureSqlTable2",
+						"type": "DatasetReference"
+					},
+					"name": "dailytestssink"
 				}
 			],
 			"transformations": [
@@ -26,7 +40,7 @@
 					"name": "DerivedColumn1"
 				}
 			],
-			"script": "source(output(\n\t\tProp_0 as string,\n\t\tgeo_merge as string,\n\t\tpersons_tested_final as string,\n\t\ttesting_rate_final as string,\n\t\tadj_testing_rate_final as string,\n\t\tpersons_tested_pos_final as string,\n\t\tpos_testing_rate_final as string,\n\t\tadj_pos_testing_rate_final as string,\n\t\tpopulation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 derive(Region = iif(like(geo_merge,'Unincorporated -%'), \"Unincorporated\", iif(like(geo_merge,'Los Angeles -%'), \"Los Angeles\", \"City\"))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+			"script": "source(output(\n\t\tProp_0 as string,\n\t\tgeo_merge as string,\n\t\tpersons_tested_final as string,\n\t\ttesting_rate_final as string,\n\t\tadj_testing_rate_final as string,\n\t\tpersons_tested_pos_final as string,\n\t\tpos_testing_rate_final as string,\n\t\tadj_pos_testing_rate_final as string,\n\t\tpopulation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tProp_0 as string,\n\t\tdate_use as date,\n\t\tcumulative_tests as integer,\n\t\tcumulative_tests_pos as integer,\n\t\tpercent_positive_tests_cum as string,\n\t\ttests as integer,\n\t\ttests_pos as integer,\n\t\tpercent_positive_tests as string,\n\t\tavg_tests as integer,\n\t\tavg_pos_tests as integer,\n\t\tpercent_positive_avg_tests as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> dailytests\nsource1 derive(Region = iif(like(geo_merge,'Unincorporated -%'), \"Unincorporated\", iif(like(geo_merge,'Los Angeles -%'), \"Los Angeles\", \"City\"))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\ndailytests sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> dailytestssink"
 		}
 	}
 }
