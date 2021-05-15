@@ -9,7 +9,7 @@
 		"type": "AzureSqlTable",
 		"schema": [],
 		"typeProperties": {
-			"schema": "",
+			"schema": "dbo",
 			"table": "LA_County_Covid19_testing_table"
 		}
 	}

@@ -22,7 +22,7 @@
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\tProp_0 as string,\n\t\tgeo_merge as string,\n\t\tpersons_tested_final as string,\n\t\ttesting_rate_final as string,\n\t\tadj_testing_rate_final as string,\n\t\tpersons_tested_pos_final as string,\n\t\tpos_testing_rate_final as string,\n\t\tadj_pos_testing_rate_final as string,\n\t\tpopulation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+			"script": "source(output(\n\t\tProp_0 as string,\n\t\tgeo_merge as string,\n\t\tpersons_tested_final as string,\n\t\ttesting_rate_final as string,\n\t\tadj_testing_rate_final as string,\n\t\tpersons_tested_pos_final as string,\n\t\tpos_testing_rate_final as string,\n\t\tadj_pos_testing_rate_final as string,\n\t\tpopulation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
 		}
 	}
 }
