@@ -133,6 +133,100 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/LA_County_Covid19_tests_date_table')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorage1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "LA_County_Covid19_tests_date_table.csv",
+						"container": "gb-blob-container"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "Prop_0",
+						"type": "String"
+					},
+					{
+						"name": "date_use",
+						"type": "String"
+					},
+					{
+						"name": "cumulative_tests",
+						"type": "String"
+					},
+					{
+						"name": "cumulative_tests_pos",
+						"type": "String"
+					},
+					{
+						"name": "percent_positive_tests_cum",
+						"type": "String"
+					},
+					{
+						"name": "tests",
+						"type": "String"
+					},
+					{
+						"name": "tests_pos",
+						"type": "String"
+					},
+					{
+						"name": "percent_positive_tests",
+						"type": "String"
+					},
+					{
+						"name": "avg_tests",
+						"type": "String"
+					},
+					{
+						"name": "avg_pos_tests",
+						"type": "String"
+					},
+					{
+						"name": "percent_positive_avg_tests",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlTable2')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSqlDatabase1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "LA_County_Covid19_tests_date_table"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSqlDatabase1')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -146,6 +240,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "source1"
+						},
+						{
+							"dataset": {
+								"referenceName": "LA_County_Covid19_tests_date_table",
+								"type": "DatasetReference"
+							},
+							"name": "dailytests"
 						}
 					],
 					"sinks": [
@@ -155,6 +256,13 @@
 								"type": "DatasetReference"
 							},
 							"name": "sink1"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlTable2",
+								"type": "DatasetReference"
+							},
+							"name": "dailytestssink"
 						}
 					],
 					"transformations": [
@@ -162,12 +270,14 @@
 							"name": "DerivedColumn1"
 						}
 					],
-					"script": "source(output(\n\t\tProp_0 as string,\n\t\tgeo_merge as string,\n\t\tpersons_tested_final as string,\n\t\ttesting_rate_final as string,\n\t\tadj_testing_rate_final as string,\n\t\tpersons_tested_pos_final as string,\n\t\tpos_testing_rate_final as string,\n\t\tadj_pos_testing_rate_final as string,\n\t\tpopulation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource1 derive(Region = iif(like(geo_merge,'Unincorporated -%'), \"Unincorporated\", iif(like(geo_merge,'Los Angeles -%'), \"Los Angeles\", \"City\"))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1"
+					"script": "source(output(\n\t\tProp_0 as string,\n\t\tgeo_merge as string,\n\t\tpersons_tested_final as string,\n\t\ttesting_rate_final as string,\n\t\tadj_testing_rate_final as string,\n\t\tpersons_tested_pos_final as string,\n\t\tpos_testing_rate_final as string,\n\t\tadj_pos_testing_rate_final as string,\n\t\tpopulation as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> source1\nsource(output(\n\t\tProp_0 as string,\n\t\tdate_use as date,\n\t\tcumulative_tests as integer,\n\t\tcumulative_tests_pos as integer,\n\t\tpercent_positive_tests_cum as string,\n\t\ttests as integer,\n\t\ttests_pos as integer,\n\t\tpercent_positive_tests as string,\n\t\tavg_tests as integer,\n\t\tavg_pos_tests as integer,\n\t\tpercent_positive_avg_tests as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false) ~> dailytests\nsource1 derive(Region = iif(like(geo_merge,'Unincorporated -%'), \"Unincorporated\", iif(like(geo_merge,'Los Angeles -%'), \"Los Angeles\", \"City\"))) ~> DerivedColumn1\nDerivedColumn1 sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\trecreate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> sink1\ndailytests sink(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\ttruncate:true,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true,\n\terrorHandlingOption: 'stopOnFirstError') ~> dailytestssink"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
-				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
+				"[concat(variables('factoryId'), '/datasets/LA_County_Covid19_tests_date_table')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlTable2')]"
 			]
 		},
 		{
@@ -195,7 +305,9 @@
 								"parameters": {},
 								"datasetParameters": {
 									"source1": {},
-									"sink1": {}
+									"dailytests": {},
+									"sink1": {},
+									"dailytestssink": {}
 								}
 							},
 							"staging": {},
