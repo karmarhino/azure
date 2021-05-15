@@ -1,0 +1,60 @@
+{
+	"name": "DelimitedText1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorage1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "LA_County_Covid19_CSA_testing_table.csv",
+				"container": "gb-blob-container"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "Prop_0",
+				"type": "String"
+			},
+			{
+				"name": "geo_merge",
+				"type": "String"
+			},
+			{
+				"name": "persons_tested_final",
+				"type": "String"
+			},
+			{
+				"name": "testing_rate_final",
+				"type": "String"
+			},
+			{
+				"name": "adj_testing_rate_final",
+				"type": "String"
+			},
+			{
+				"name": "persons_tested_pos_final",
+				"type": "String"
+			},
+			{
+				"name": "pos_testing_rate_final",
+				"type": "String"
+			},
+			{
+				"name": "adj_pos_testing_rate_final",
+				"type": "String"
+			},
+			{
+				"name": "population",
+				"type": "String"
+			}
+		]
+	}
+}
