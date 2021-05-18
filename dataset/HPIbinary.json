@@ -1,0 +1,19 @@
+{
+	"name": "HPIbinary",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "HttpServerHPI",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Binary",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation"
+			},
+			"compression": {
+				"type": "ZipDeflate"
+			}
+		}
+	}
+}
