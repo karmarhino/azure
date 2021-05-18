@@ -1,0 +1,12 @@
+{
+	"name": "HttpServerHPI",
+	"properties": {
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://healthyplacesindex.org/wp-content/uploads/2018/04/HPI-Individual-Indicators.zip",
+			"enableServerCertificateValidation": false,
+			"authenticationType": "Anonymous"
+		}
+	}
+}
